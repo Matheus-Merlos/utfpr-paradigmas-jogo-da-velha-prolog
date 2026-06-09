@@ -1,0 +1,1 @@
+% Fatos e predicados que ditam a regra do jogo

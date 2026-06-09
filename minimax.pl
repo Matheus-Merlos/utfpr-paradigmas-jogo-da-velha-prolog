@@ -1,0 +1,1 @@
+% Algoritmo minimax para jogar contra você :)
