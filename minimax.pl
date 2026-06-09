@@ -33,7 +33,7 @@ evaluate_line(_, _, _, 0). % Qualquer outra combinação é 0
 
 % Predicado que filtra elementos iguais
 is_equal(X, Y) :- X = Y.
-include_eq(X, Lista, Filtrada) :- include(is_equal(X), Lista, Filtrada).
+include_eq(X, Table, FilteredTable) :- include(is_equal(X), Table, FilteredTable).
 
 % Predicado pra realmente trazer o valor da linha
 count_line_evaluation(Table, [Index1, Index2, Index3], Score) :-
