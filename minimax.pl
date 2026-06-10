@@ -64,3 +64,41 @@ generate_all_possible_moves(Table, Player, PossibleMoves) :-
             nth0(Index, Table, 0),
             replace(Index, Player, Table, NewTable)
         ), PossibleMoves).
+
+
+% PREDICADOS AUXILIARES
+
+% Predicado que avalia toda uma lista de movimentos
+evaluate_moves([], _, []).
+evaluate_moves([HeadTable|TailTables], Player, [Score-HeadTable|TailScores]) :-
+    minimax(HeadTable, Player, _, Score),
+    evaluate_moves(TailTables, Player, TailScores).
+
+% Predicado que trás o melhor movimento
+choose_best_move(1, ScoresList, BestTable, BestScore) :-
+    keysort(ScoresList, SortedList),
+    last(SortedList, BestScore-BestTable).
+choose_best_move(2, ScoresList, BestTable, BestScore) :-
+    keysort(ScoresList, [BestScore-BestTable|_]).
+
+game_over(Table) :- 
+    \+ member(0, Table).
+game_over(Table) :-
+    evaluate_table(Table, Score),
+    (Score >= 1000 ; Score =< -1000).
+
+
+% PREDICADO GERAL (O Minimax em si)
+% ================================
+next_player(1, 2).
+next_player(2, 1).
+
+minimax(Table, _, Table, Score) :- 
+    game_over(Table),
+    evaluate_table(Table, Score),!.
+minimax(Table, Player, BestNextTable, BestScore) :-
+    \+ game_over(Table),
+    generate_all_possible_moves(Table, Player, PossibleMoves),
+    next_player(Player, NextPlayer),
+    evaluate_moves(PossibleMoves, NextPlayer, ScoresList),
+    choose_best_move(Player, ScoresList, BestNextTable, BestScore).
