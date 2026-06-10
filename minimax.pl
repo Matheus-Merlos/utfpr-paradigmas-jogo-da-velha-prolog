@@ -81,11 +81,24 @@ choose_best_move(1, ScoresList, BestTable, BestScore) :-
 choose_best_move(2, ScoresList, BestTable, BestScore) :-
     keysort(ScoresList, [BestScore-BestTable|_]).
 
+
+vencedor(Table, Player) :-
+    line([I1, I2, I3]),
+    nth0(I1, Table, Player),
+    nth0(I2, Table, Player),
+    nth0(I3, Table, Player),
+    Player \= 0,
+    !.
+
+% PREDICADO PARA VERIFICAR FIM DE JOGO
+% ================================
+% O jogo acaba se o tabuleiro não tem mais casas vazias
 game_over(Table) :- 
     \+ member(0, Table).
+
+% O jogo acaba se alguém ganhou
 game_over(Table) :-
-    evaluate_table(Table, Score),
-    (Score >= 1000 ; Score =< -1000).
+    vencedor(Table, _).
 
 
 % PREDICADO GERAL (O Minimax em si)
