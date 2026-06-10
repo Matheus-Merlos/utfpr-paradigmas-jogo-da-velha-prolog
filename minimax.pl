@@ -1,6 +1,6 @@
 % Algoritmo minimax para jogar contra você :)
 
-% FUNÇÃO DE AVALIAÇÃO
+% PREDICADO DE AVALIAÇÃO
 % ================================
 
 % Em um jogo da velha, temos 8 "linhas"
@@ -49,3 +49,18 @@ count_line_evaluation(Table, [Index1, Index2, Index3], Score) :-
 evaluate_table(Table, FinalScore) :-
     findall(Score, (line(L), count_line_evaluation(Table, L, Score)), ScoreList),
     sum_list(ScoreList, FinalScore).
+
+
+% PREDICADO DE GERAR TODAS JOGADAS POSSÍVEIS DADO UM DETERMINADO TABULEIRO
+% ================================
+
+% Predicado auxiliar que troca um elemento de uma lista por outro.
+replace(0, Element, [_|Tail], [Element|Tail]).
+replace(Index, Element, [Head|Tail], [Head|NewTail]) :- Index > 0, NextIndex is Index - 1, replace(NextIndex, Element, Tail, NewTail).
+
+% Predicado que gera todas as próximas jogadas possíveis dado um determinado tabuleiro
+generate_all_possible_moves(Table, Player, PossibleMoves) :-
+    findall(NewTable, (
+            nth0(Index, Table, 0),
+            replace(Index, Player, Table, NewTable)
+        ), PossibleMoves).
