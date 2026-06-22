@@ -14,11 +14,11 @@ exibir_tabuleiro([A,B,C,D,E,F,G,H,I]) :-
     simbolo(G, PosG),
     simbolo(H, PosH),
     simbolo(I, PosI),
-
-    writeln('┌───┬───┬───┐'),
-    format('│ ~w │ ~w │ ~w │~n', [PosA,PosB,PosC]),
-    writeln('├───┼───┼───┤'),
-    format('│ ~w │ ~w │ ~w │~n', [PosD,PosE,PosF]),
-    writeln('├───┼───┼───┤'),
-    format('│ ~w │ ~w │ ~w │~n', [PosG,PosH,PosI]),
-    writeln('└───┴───┴───┘').
+    writeln('     1   2   3'),
+    writeln('   ┌───┬───┬───┐'),
+    format('L1 │ ~w │ ~w │ ~w │~n', [PosA,PosB,PosC]),
+    writeln('   ├───┼───┼───┤'),
+    format('L2 │ ~w │ ~w │ ~w │~n', [PosD,PosE,PosF]),
+    writeln('   ├───┼───┼───┤'),
+    format('L3 │ ~w │ ~w │ ~w │~n', [PosG,PosH,PosI]),
+    writeln('   └───┴───┴───┘').
