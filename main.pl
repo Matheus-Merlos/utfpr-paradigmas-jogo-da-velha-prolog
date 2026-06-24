@@ -37,55 +37,56 @@ iniciar :-
     tabuleiro(Tab),
     nl,
     writeln('=== JOGO DA VELHA ==='),
-    writeln('Voce joga com "X". O computador joga com "O".'),
-    writeln('Para sair, digite: -1, -1.'),
+    writeln('1 - Jogador x Computador'),
+    writeln('2 - Jogador x Jogador'),
+    read(Modo),
+    (Modo = 1 ; Modo = 2),
     nl,
-    rodar(Tab, 1, _).
+    rodar(Tab, 1, Modo, _).
 
-% rodar(Tab, Jogador, NovoTab) -> Controla o fluxo principal do jogo.
+% rodar(Tab, Jogador, Modo, NovoTab) -> Controla o fluxo principal do jogo.
 
 % Caso 1: ha vencedor - exibe tabuleiro final e anuncia o resultado.
-rodar(Tab, _, Tab) :-
+rodar(Tab, _, _, Tab) :-
     vencedor(Tab, Vencedor), !,
     exibir_tabuleiro(Tab),
-    (Vencedor =:= 1
-        -> writeln('Parabens! Voce venceu!')
-        ;  writeln('O computador venceu! Mais sorte da proxima vez.')
-    ).
+    format('Jogador ~w venceu!~n', [Vencedor]).
 
 % Caso 2: empate - exibe tabuleiro final e anuncia o empate.
-rodar(Tab, _, Tab) :-
+rodar(Tab, _, _, Tab) :-
     empate(Tab), !,
     exibir_tabuleiro(Tab),
     writeln('Empate!').
 
 % Caso 3: turno do jogador, exibe tabuleiro, le e processa a jogada.
-rodar(Tab, 1, NovoTab) :-
+rodar(Tab, Jogador, Modo, NovoTab) :-
+    (Jogador =:= 1;(Jogador =:= 2, Modo =:= 2)),
     nl,
     exibir_tabuleiro(Tab),
-    writeln('Sua vez (X). Digite Linha, Coluna.'),
+    format('Vez do jogador ~w. Digite Linha, Coluna.~n', [Jogador]),
     read(Entrada),
-    processar_entrada(Entrada, Tab, NovoTab).
+    processar_entrada(Entrada, Tab, Jogador, Modo, NovoTab).
 
 % Caso 4: turno do computador, calcula a melhor jogada via minimax e continua.
-rodar(Tab, 2, NovoTab) :-
+rodar(Tab, 2, 1, NovoTab) :-
     writeln('O computador esta calculando a melhor jogada...'),
     minimax(Tab, 2, TabPC, _),
     proximo_jogador(2, Proximo),
-    rodar(TabPC, Proximo, NovoTab).
+    rodar(TabPC, Proximo, 1, NovoTab).
 
 % processar_entrada(Entrada, Tab, NovoTab) -> Processa o termo lido do teclado.
 
 % Saida solicitada pelo jogador: encerra o jogo imediatamente.
-processar_entrada((-1, -1), Tab, Tab) :- !,
+processar_entrada((-1, -1), Tab, _, _, Tab) :- !,
     writeln('Jogo encerrado pelo jogador!').
 
 % Jogada informada: Se invalida, solicita nova jogada sem trocar o turno.
-processar_entrada((Linha, Coluna), Tab, NovoTab) :-
-    (jogar(Linha, Coluna, Tab, 1, TabAtualizado)
-        -> rodar(TabAtualizado, 2, NovoTab)
+processar_entrada((Linha, Coluna), Tab, Jogador, Modo, NovoTab) :-
+    (jogar(Linha, Coluna, Tab, Jogador, TabAtualizado)
+        -> proximo_jogador(Jogador, Proximo),
+        rodar(TabAtualizado, Proximo, Modo, NovoTab)
         ;  writeln('Jogada invalida! Posicao ocupada ou fora do tabuleiro. Tente novamente.'),
-           rodar(Tab, 1, NovoTab)
+           rodar(Tab, Jogador, Modo, NovoTab)
     ).
 
 :- initialization(iniciar, main).
